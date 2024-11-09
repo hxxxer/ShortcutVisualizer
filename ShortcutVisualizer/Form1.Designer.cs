@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btnBrowse = new System.Windows.Forms.Button();
             this.txtFolderPath = new System.Windows.Forms.TextBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -77,6 +78,7 @@
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.txtFolderPath);
             this.Controls.Add(this.btnBrowse);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "打开软件";
             this.ResumeLayout(false);
