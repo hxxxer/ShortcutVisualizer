@@ -1,5 +1,5 @@
 
-name: ShortVisualizer Release
+name: ShortcutVisualizer Release
 
 on:
   push:
@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      Solution_Name: ShortVisualizer.sln
-      Test_Project_Path: ShortVisualizer\ShortVisualizer.csproj
-      ReleaseZipName: ShortVisualizer.zip
+      Solution_Name: ShortcutVisualizer.sln
+      Test_Project_Path: ShortcutVisualizer\ShortcutVisualizer.csproj
+      ReleaseZipName: ShortcutVisualizer.zip
 
 
     steps:
@@ -52,10 +52,10 @@ jobs:
     - name: Zip the Build
       # run: |
       #   $sourceFolder = "${{ github.workspace }}\Hugo\bin\Release\net6.0-windows\win-x64"
-      #   $zipFilePath = "${{ github.workspace }}\ShortVisualizer.zip"
+      #   $zipFilePath = "${{ github.workspace }}\ShortcutVisualizer.zip"
       #   Compress-Archive -Path $sourceFolder -DestinationPath $zipFilePath -Force
       # shell: pwsh 
-      run: zip -r $env:ReleaseZipName ./ShortVisualizer/bin/Release/net6.0-windows/win-x64
+      run: zip -r $env:ReleaseZipName ./ShortcutVisualizer/bin/Release/net6.0-windows/win-x64
       
       
     - name: Create and Upload Release
