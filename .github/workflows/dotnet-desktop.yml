@@ -55,7 +55,7 @@ jobs:
       #   $zipFilePath = "${{ github.workspace }}\ShortcutVisualizer.zip"
       #   Compress-Archive -Path $sourceFolder -DestinationPath $zipFilePath -Force
       # shell: pwsh 
-      run: zip -r $env:ReleaseZipName ./ShortcutVisualizer/bin/Release/net6.0-windows
+      run: zip -r ShortcutVisualizer.zip ./ShortcutVisualizer/bin/Release/net6.0-windows
       
       
     - name: Create and Upload Release
