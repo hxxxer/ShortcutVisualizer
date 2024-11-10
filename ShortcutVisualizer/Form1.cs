@@ -12,14 +12,16 @@ namespace ShortcutVisualizer
         public MainForm()
         {
             InitializeComponent();
-
-            txtFolderPath.Text = @"D:\软件"; // 设置初始文件夹路径
+            
+            // 设置初始文件夹路径
+            txtFolderPath.Text = @"D:\软件";
             // 在构造函数中初始化文件夹路径并填充树形视图
             PopulateTreeView(@"D:\软件");
         }
 
         public class ShellIcon
         {
+            // 导入shell32.dll的ExtractIcon函数
             [DllImport("shell32.dll", CharSet = CharSet.Auto)]
             private static extern IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
 
@@ -41,7 +43,10 @@ namespace ShortcutVisualizer
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                fbd.Description = "Select the folder containing the shortcut files";
+                // 设置浏览文件夹窗口的标题（只能通过先设置描述再将描述改成标题来设置）
+                fbd.Description = "选择快捷方式所在文件夹";
+                fbd.UseDescriptionForTitle = true;
+
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
                     txtFolderPath.Text = fbd.SelectedPath;
@@ -53,15 +58,13 @@ namespace ShortcutVisualizer
 
         private void PopulateTreeView(string folderPath)
         {
+            // 清理原来的内容
             imageList1.Images.Clear();
             treeView1.Nodes.Clear();
 
             // 添加文件夹图标
             Icon folderIcon = ShellIcon.GetFolderIcon(3);
-            if (folderIcon != null)
-            {
-                imageList1.Images.Add("folder", folderIcon);
-            }
+            if (folderIcon != null) imageList1.Images.Add("folder", folderIcon);
 
             TraverseFolder(folderPath, treeView1.Nodes, imageList1);
             treeView1.ImageList = imageList1;
