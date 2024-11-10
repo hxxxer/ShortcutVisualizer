@@ -62,37 +62,43 @@ namespace ShortcutVisualizer
             imageList1.Images.Clear();
             treeView1.Nodes.Clear();
 
-            // 添加文件夹图标
-            Icon folderIcon = ShellIcon.GetFolderIcon(3);
+            // 添加文件夹图标，如果获取失败则使用透明图
+            Icon folderIcon = ShellIcon.GetFolderIcon(3) ?? Icon.FromHandle((new Bitmap(40, 40)).GetHicon());
             if (folderIcon != null) imageList1.Images.Add("folder", folderIcon);
 
+            // 构建文件树并关联图标
             TraverseFolder(folderPath, treeView1.Nodes, imageList1);
             treeView1.ImageList = imageList1;
         }
 
         private void TraverseFolder(string path, TreeNodeCollection nodes, ImageList imageList)
         {
-            string[] directories = Directory.GetDirectories(path);
-            string[] files = Directory.GetFiles(path, "*.lnk");
+            string[] directories = Directory.GetDirectories(path);  // 获取当前目录的子文件夹
+            string[] files = Directory.GetFiles(path, "*.lnk");  // 获取当前目录的lnk文件
 
+            // 递归建树
             foreach (string dir in directories)
             {
                 TreeNode dirNode = nodes.Add(Path.GetFileName(dir));
                 TraverseFolder(dir, dirNode.Nodes, imageList);
             }
 
+            // 构建快捷方式节点
             foreach (string file in files)
             {
+                // 获取快捷方式的图标，注意不是快捷方式所指文件的图标
                 imageList1.Images.Add("icon", Icon.ExtractAssociatedIcon(file));
 
+                // 获取文件名并去除无关信息
                 string fileName = Path.GetFileNameWithoutExtension(file);
-                Regex regex = new Regex(@"(.+)\.exe - 快捷方式");
+                Regex regex = new(@"(.+)\.exe - 快捷方式");
                 Match match = regex.Match(fileName);
                 if (match.Success)
                 {
                     fileName = match.Groups[1].Value;
                 }
 
+                // 建节点
                 TreeNode fileNode = nodes.Add(fileName);
                 fileNode.ImageIndex = imageList.Images.Count - 1;
                 fileNode.SelectedImageIndex = imageList.Images.Count - 1;
@@ -101,23 +107,24 @@ namespace ShortcutVisualizer
         }
 
 
+        // 定义双击文件树事件
         private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
+            // 判断点击节点是否有字符串格式的tag
             if (e.Node.Tag is string shortcutPath)
             {
                 // 使用ProcessStartInfo指定要启动的文件
-                ProcessStartInfo startInfo = new ProcessStartInfo(shortcutPath);
-
-                // 设置UseShellExecute为true，这样可以正确处理快捷方式
-                startInfo.UseShellExecute = true;
+                ProcessStartInfo startInfo = new(shortcutPath)
+                {
+                    // 设置UseShellExecute为true，这样可以正确处理快捷方式
+                    UseShellExecute = true
+                };
 
                 try
                 {
                     // 创建一个新的进程并启动它
-                    using (Process process = new Process { StartInfo = startInfo })
-                    {
-                        process.Start();
-                    }
+                    using Process process = new() { StartInfo = startInfo };
+                    process.Start();
                 }
                 catch (Exception ex)
                 {
